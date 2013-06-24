@@ -7,7 +7,7 @@ def index(request):
 
 def getStory(request, story_id):
     # db connection
-    db = MySQLdb.connect(host="localhost", user="root", passwd="Danger0534", db="sic")
+    db = MySQLdb.connect(host="localhost", user="nytimes", passwd="nytimes", db="StoryDB")
     cursor = db.cursor()
 	
     getStory = "SELECT xyz FROM xyz WHERE xyz = '%s'" % story_id
@@ -19,21 +19,23 @@ def getStory(request, story_id):
 
 
 def getStories(request, last):
-    getStory = """
-				SELECT stories_story.story_id, stories_story.author, stories_story.time_created, 
-				stories_story.headline, stories_photo.photo_url FROM stories_story, stories_photo 
-				WHERE stories_story.cover_photo_id = stories_photo.photo_id LIMIT %i
-				""" % (last)
+	# db connection
+    db = MySQLdb.connect(host="localhost", user="nytimes", passwd="nytimes", db="StoryDB")
+    cursor = db.cursor()
+
+    getStory = "SELECT * FROM extractionAPI_story LIMIT %s" % (last)
 
     cursor.execute(getStory)
 
     rows = cursor.fetchall()
     rowarray_list = []
     for row in rows:
-        t = (row.story_id, row.author, row.time_created, row.headline, row.photo_url)
+        t = (row[0], row[1], row[2] + " " + row[3], "1427364927", row[5])
         rowarray_list.append(t)
 
     j = json.dumps(rowarray_list)
+
+    db.close()
 
     return HttpResponse(j)
 
