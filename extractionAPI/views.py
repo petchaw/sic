@@ -7,15 +7,17 @@ def index(request):
 
 def getStory(request, story_id):
     # db connection
-    db = MySQLdb.connect(host="localhost", user="nytimes", passwd="nytimes", db="StoryDB")
-    cursor = db.cursor()
+    #db = MySQLdb.connect(host="localhost", user="nytimes", passwd="nytimes", db="StoryDB")
+    #cursor = db.cursor()
 	
-    getStory = "SELECT xyz FROM xyz WHERE xyz = '%s'" % story_id
-    cursor.execute(getStory)
-    cid = cursor.fetchone()
-    db.close()
+    #getStories = "SELECT xyz FROM xyz WHERE xyz = '%s'" % story_id
+    #cursor.execute(getStories)
 
-    return HttpResponse("There you go")
+    #cid = cursor.fetchone()
+
+    #db.close()
+    return HttpResponse("You are getting story id %s here!" % story_id)
+    #return HttpResponse(j, mimetype='application/json')
 
 
 def getStories(request, last):
@@ -24,11 +26,11 @@ def getStories(request, last):
     cursor = db.cursor()
 
     getStory = "SELECT * FROM extractionAPI_story LIMIT %s" % (last)
-
     cursor.execute(getStory)
 
     rows = cursor.fetchall()
     objects_list = []
+
     for row in rows:
         d = collections.OrderedDict()
         d['story_id'] = row[0]
@@ -42,10 +44,4 @@ def getStories(request, last):
     j = json.dumps(objects_list)
 
     db.close()
-
     return HttpResponse(j, mimetype='application/json')
-
-
-# ex: /story?id=1     			OR     /story/1
-# ex: /stories?getlast=10     	OR     /stories/10
-# ex: /
