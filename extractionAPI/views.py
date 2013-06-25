@@ -28,16 +28,22 @@ def getStories(request, last):
     cursor.execute(getStory)
 
     rows = cursor.fetchall()
-    rowarray_list = []
+    objects_list = []
     for row in rows:
-        t = (row[0], row[1], row[2] + " " + row[3], "1427364927", row[5])
-        rowarray_list.append(t)
+        d = collections.OrderedDict()
+        d['story_id'] = row[0]
+        d['headline'] = row[1]
+        d['author_name'] = row[2] + " " + row[3]
+        d['timecreated'] = "1674957692458"
+        d['coverphoto'] = row[5]
+        
+        objects_list.append(d)
 
-    j = json.dumps(rowarray_list)
+    j = json.dumps(objects_list)
 
     db.close()
 
-    return HttpResponse(j)
+    return HttpResponse(j, mimetype='application/json')
 
 
 # ex: /story?id=1     			OR     /story/1
