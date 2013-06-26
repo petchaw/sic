@@ -5,8 +5,31 @@ def index(request):
     return HttpResponse("You're at the index.")
 
 
-def getStoriesByTag(request, tag):
-    return HttpResponse("I guess you want stories related to #%s" % tag)
+def getStoriesByTag(request, tag, cnt):
+    # db connection
+    db = MySQLdb.connect(host="localhost", user="nytimes", passwd="nytimes", db="StoryDB")
+    cursor = db.cursor()
+
+    getStories = "SELECT extractionAPI_story.story_id, extractionAPI_story.headline, extractionAPI_story.author_firstName, extractionAPI_story.author_lastName, extractionAPI_story.timecreated, extractionAPI_story.coverphoto FROM extractionAPI_story, extractionAPI_story_tags WHERE extractionAPI_story_tags.tag_name_id = \"%s\" AND extractionAPI_story.story_id = extractionAPI_story_tags.story_id  LIMIT %s" % (tag, cnt)
+    cursor.execute(getStories)
+
+    rows = cursor.fetchall()
+    objects_list = []
+
+    for row in rows:
+        d = collections.OrderedDict()
+        d['story_id'] = row[0]
+        d['headline'] = row[1]
+        d['author'] = row[2] + " " + row[3]
+        d['timecreated'] = "1674957692458"
+        d['coverphoto'] = row[5]
+        
+        objects_list.append(d)
+
+    j = json.dumps(objects_list)
+
+    db.close()
+    return HttpResponse(j, mimetype='application/json')
 
 
 def getStory(request, story_id):
@@ -14,8 +37,8 @@ def getStory(request, story_id):
     db = MySQLdb.connect(host="localhost", user="nytimes", passwd="nytimes", db="StoryDB")
     cursor = db.cursor()
 	
-    getStories = "SELECT headline, author_firstName, author_lastName, timecreated, coverphoto FROM extractionAPI_story WHERE story_id = %s" % story_id
-    cursor.execute(getStories)
+    getStory = "SELECT headline, author_firstName, author_lastName, timecreated, coverphoto FROM extractionAPI_story WHERE story_id = %s" % story_id
+    cursor.execute(getStory)
 
     row = cursor.fetchone()
     story_obj = []
@@ -82,8 +105,8 @@ def getStories(request, last):
     db = MySQLdb.connect(host="localhost", user="nytimes", passwd="nytimes", db="StoryDB")
     cursor = db.cursor()
 
-    getStory = "SELECT * FROM extractionAPI_story LIMIT %s" % (last)
-    cursor.execute(getStory)
+    getStories = "SELECT * FROM extractionAPI_story LIMIT %s" % (last)
+    cursor.execute(getStories)
 
     rows = cursor.fetchall()
     objects_list = []
