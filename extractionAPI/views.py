@@ -2,7 +2,11 @@ from django.http import HttpResponse
 import MySQLdb, json, collections
 
 def index(request):
-    return HttpResponse("Hello, world. You're at the index.")
+    return HttpResponse("You're at the index.")
+
+
+def getStoriesByTag(request, tag):
+    return HttpResponse("I guess you want stories related to #%s" % tag)
 
 
 def getStory(request, story_id):
@@ -21,7 +25,19 @@ def getStory(request, story_id):
     s['timecreated'] = "1625339234453"
     s['headline'] = row[0]
     s['coverphoto'] = row[4]
+    s['tags'] = []
     s['slide'] = []
+
+    getTags = "SELECT tag_name_id FROM extractionAPI_story_tags WHERE story_id = %s" % story_id
+    cursor.execute(getTags)
+
+    stags = cursor.fetchall()
+    t = []
+
+    for tag in stags:
+        t.append(tag[0])
+
+    s['tags'].append(t)
 
     getSlides = "SELECT slide_id, typeofslide_id, summary FROM extractionAPI_slide WHERE story_id = %s" % story_id
     cursor.execute(getSlides)
