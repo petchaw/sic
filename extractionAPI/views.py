@@ -89,14 +89,10 @@ def getStory(request, story_id):
             i['credit'] = imgrow[5]
             s1['images'].append(i)
 
-
-        
     story_obj.append(s)
-
     sty = json.dumps(story_obj)
 
     db.close()
-    #return HttpResponse("You are getting story id %s here!" % story_id)
     return HttpResponse(sty, mimetype='application/json')
 
 
