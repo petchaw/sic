@@ -7,17 +7,58 @@ def index(request):
 
 def getStory(request, story_id):
     # db connection
-    #db = MySQLdb.connect(host="localhost", user="nytimes", passwd="nytimes", db="StoryDB")
-    #cursor = db.cursor()
+    db = MySQLdb.connect(host="localhost", user="nytimes", passwd="nytimes", db="StoryDB")
+    cursor = db.cursor()
 	
-    #getStories = "SELECT xyz FROM xyz WHERE xyz = '%s'" % story_id
-    #cursor.execute(getStories)
+    getStories = "SELECT headline, author_firstName, author_lastName, timecreated, coverphoto FROM extractionAPI_story WHERE story_id = %s" % story_id
+    cursor.execute(getStories)
 
-    #cid = cursor.fetchone()
+    row = cursor.fetchone()
+    story_obj = []
 
-    #db.close()
-    return HttpResponse("You are getting story id %s here!" % story_id)
-    #return HttpResponse(j, mimetype='application/json')
+    s = collections.OrderedDict()
+    s['author'] = row[1] + " " + row[2]
+    s['timecreated'] = "1625339234453"
+    s['headline'] = row[0]
+    s['coverphoto'] = row[4]
+    s['slide'] = []
+
+    getSlides = "SELECT slide_id, typeofslide_id, summary FROM extractionAPI_slide WHERE story_id = %s" % story_id
+    cursor.execute(getSlides)
+
+    rows = cursor.fetchall()
+
+    for row in rows:
+        s1 = collections.OrderedDict()
+        s1['type'] = row[1]
+        s1['summary'] = row[2]
+        s['slide'].append(s1)
+        s1['images'] = []
+
+        getImages = "SELECT extractionAPI_image.image_id, extractionAPI_image.image, extractionAPI_image.width, extractionAPI_image.height, extractionAPI_image.timetaken, extractionAPI_image.photo_credit, extractionAPI_image.caption FROM extractionAPI_image, extractionAPI_image_in_slide WHERE extractionAPI_image_in_slide.slide_id = %s AND extractionAPI_image_in_slide.image_id = extractionAPI_image.image_id" % row[0]
+        cursor.execute(getImages)
+
+        imgrows = cursor.fetchall()
+
+        for imgrow in imgrows:
+            i = collections.OrderedDict()
+            i['url'] = imgrow[1]
+            i['caption'] = imgrow[6]
+            i['width'] = imgrow[2]
+            i['height'] = imgrow[3]
+            i['timetaken'] = "17364529455673"
+            i['credit'] = imgrow[5]
+            s1['images'].append(i)
+
+
+        
+    story_obj.append(s)
+
+    sty = json.dumps(story_obj)
+
+    db.close()
+    #return HttpResponse("You are getting story id %s here!" % story_id)
+    return HttpResponse(sty, mimetype='application/json')
 
 
 def getStories(request, last):
@@ -35,7 +76,7 @@ def getStories(request, last):
         d = collections.OrderedDict()
         d['story_id'] = row[0]
         d['headline'] = row[1]
-        d['author_name'] = row[2] + " " + row[3]
+        d['author'] = row[2] + " " + row[3]
         d['timecreated'] = "1674957692458"
         d['coverphoto'] = row[5]
         
