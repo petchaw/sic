@@ -51,7 +51,7 @@ def getStory(request, story_id):
     s['tags'] = []
     s['slide'] = []
 
-    getTags = "SELECT tag_name_id FROM extractionAPI_story_tags WHERE story_id = %s" % story_id
+    getTags = "SELECT tag_type_id FROM Tags_In_Story WHERE story_id = %s" % story_id
     cursor.execute(getTags)
 
     stags = cursor.fetchall()
@@ -74,19 +74,20 @@ def getStory(request, story_id):
         s['slide'].append(s1)
         s1['images'] = []
 
-        getImages = "SELECT extractionAPI_image.image_id, extractionAPI_image.image, extractionAPI_image.width, extractionAPI_image.height, unix_timestamp(extractionAPI_image.timetaken), extractionAPI_image.photo_credit, extractionAPI_image.caption FROM extractionAPI_image, extractionAPI_image_in_slide WHERE extractionAPI_image_in_slide.slide_id = %s AND extractionAPI_image_in_slide.image_id = extractionAPI_image.image_id" % row[0]
+        #getImages = "SELECT extractionAPI_image.image_id, extractionAPI_image.image, extractionAPI_image.width, extractionAPI_image.height, unix_timestamp(extractionAPI_image.timetaken), extractionAPI_image.photo_credit, extractionAPI_image.caption FROM extractionAPI_image, extractionAPI_image_in_slide WHERE extractionAPI_image_in_slide.slide_id = %s AND extractionAPI_image_in_slide.image_id = extractionAPI_image.image_id" % row[0]
+        getImages = "SELECT image, width, height, unix_timestamp(extractionAPI_image.datetaken), photo_credit, caption FROM extractionAPI_image WHERE slide_id = %s" % row[0]
         cursor.execute(getImages)
 
         imgrows = cursor.fetchall()
 
         for imgrow in imgrows:
             i = collections.OrderedDict()
-            i['url'] = imgrow[1]
-            i['caption'] = imgrow[6]
-            i['width'] = imgrow[2]
-            i['height'] = imgrow[3]
-            i['timetaken'] = imgrow[4]
-            i['credit'] = imgrow[5]
+            i['url'] = imgrow[0]
+            i['caption'] = imgrow[5]
+            i['width'] = imgrow[1]
+            i['height'] = imgrow[2]
+            i['timetaken'] = imgrow[3]
+            i['credit'] = imgrow[4]
             s1['images'].append(i)
 
     story_obj.append(s)

@@ -1,10 +1,11 @@
 # Django settings for nyt_project project.
+import os
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    ('Achintya Ashok', 'achintya.ashok@nytimes.com'),
+    ('Pascal Bruno', 'bpachou@hotmail.com'),
 )
 
 MANAGERS = ADMINS
@@ -50,12 +51,15 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
-MEDIA_ROOT = '/Users/205365/opt/django-projects/nyt_innovation_challenge/nyt_project/photos_django'
+MEDIA_ROOT = os.path.join('/Users/205428/Projects/sic/extractionAPI', 'media/')
+ADMIN_MEDIA_ROOT = os.path.join('/Users/205428/Projects/sic/extractionAPI', 'admin-media/')
+MEDIA_URL = '/'
+ADMIN_MEDIA_PREFIX = 'http:/localhost:8000/admin-media/'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://example.com/media/", "http://media.example.com/"
-MEDIA_URL = '/photos_django/'
+#MEDIA_URL = '/photos/'
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
@@ -125,7 +129,7 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
-    'django.contrib.admindocs',
+    #'django.contrib.admindocs',
 )
 
 # A sample logging configuration. The only tangible logging
