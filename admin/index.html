@@ -1,10 +1,33 @@
 <!DOCTYPE HTML>
 <html lang="en-US">
 <head>
-	<meta charset="UTF-8">
-	<title>Testing Index</title>
+	<meta name ="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+	<title>Olympic Stories Admin</title>
 </head>
 <body>
+	<!-- README 
+	So here is generally how this app will work.  Everything will be rendered within this one html document, the files in scripts/views will change how the page renders.
+
+	Models: the job of models is to syncronize the information on the backend with information on the front end.  the url field will point to the url to request to get the correct information.
+
+	Collections: a group of related models.  For us, a group of stories will make up the storylist collection.  This will be used for the landing page which shows the list of all stories.  The user will then click on a story to view/edit it or create a new story. The other relevant collection is story.  This is a group of slides.  This will be used on the page where we view/edit/create a story.
+
+	Views: Views basically bind a model to a DOM element.  Calling the render method on a view will re-render that element. Binding the render method to a 'change' event will be particularly useful as it will cause the view to automatically re-render if anything is changed. 
+	Here is how I have set up the views here: there are essentially 2 types of views (4 views total, 2 of each type)  the first type is the slideView and storyListItemView.
+	These are both smaller elements that will be put together to make larger views (StoryListView and Story View). in the render function of the larger encapuslating views, the smaller views will be created.  and then inserted into the html document at the correct location. The smaller views (slideView and storyListItemView) will each have a template that will actually dictate what these elements look like.
+
+	main.js: this cointains the actual scripts that are run when the page loads.  The purpose of main.js is to create the approuter.  The approuter is basically a dictionary that maps routes to functions.
+
+	the part at the top of most of these javascript files that looks something like:
+	define([
+		'backbone',
+		'models/story'
+	], function(Backbone, Story){
+
+	is requirejs.  require is a javascript library that helps with dependencies across files.  all you need to know (and really all that I know) is that it works like this:  the part in between the quotes such as backbone and 'models/story' are files that require will look for.  then when they are loaded, the script can run and you can access those files with what you name them inside the function() part (in this case, Backbone and Story)
+
+	 -->
 	<div id="content"> 
 	</div>
 

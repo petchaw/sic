@@ -2,7 +2,7 @@ define([
 	'backbone',
 	'views/slideView',
 	'collections/story'
-], function(Backbone, ScreenshotView, Batch){
+], function(Backbone, SlideView, Story){
 
 	var StoryListView = Backbone.View.extend({
 		id: 'story',
@@ -15,10 +15,10 @@ define([
 
 
 		render: function(){
-			var screenshots = this.collection.models;
-			var l = screenshots.length;
+			var slides = this.collection.models;
+			var l = slides.length;
 			for(var i = 0; i< l; i++){
-				var sc = new ScreenshotView({model: screenshots[i]}).render();
+				var sc = new SlideView({model: slides[i]}).render();
 				this.$el.append(sc.el);
 			}
 			console.log(this);
